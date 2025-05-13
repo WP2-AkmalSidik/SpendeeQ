@@ -3,13 +3,12 @@
 @section('content')
     <div class="page-content block" id="page-add">
         <!-- Header -->
-        <div class="navy-blue text-white p-6 rounded-b-3xl shadow-lg">
-            <div class="flex items-center space-x-4">
-                <a href="/" class="text-white">
+        <div class="bg-blue-900 text-white px-4 py-3 rounded-b-2xl shadow-md relative">
+            <div class="flex items-center justify-between">
+                <a href="/" class="text-white text-lg">
                     <i class="fas fa-arrow-left"></i>
                 </a>
-                <h1 class="text-xl font-bold text-center">Tambah Pengeluaran</h1>
-                <div class="w-4"></div> <!-- Spacer for balance -->
+                <h1 class="text-base font-semibold text-center flex-grow">Tambah Pengeluaran</h1>
             </div>
         </div>
 

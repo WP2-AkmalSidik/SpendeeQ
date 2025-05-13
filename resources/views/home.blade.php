@@ -18,20 +18,29 @@
 
                 <!-- Tanggal + Icon -->
                 <div class="flex items-center space-x-2">
-                    <div class="text-white/80 text-xs md:text-sm">13 May 2025</div>
-                    <i class="fas fa-calendar-days text-lg md:text-xl"></i>
+                    <div class="text-white/80 text-xs md:text-sm">Hai, {{ Auth::user()->name }}</div>
                 </div>
             </div>
 
 
             <div class="bg-white/10 rounded-xl p-3 md:p-4 mb-3 md:mb-4">
-                <div class="text-xs md:text-sm text-white/80">Pengeluaran Hari Ini</div>
-                <div class="text-xl md:text-2xl font-bold">Rp 245.000</div>
+                {{-- Header dengan ikon kalender dan tanggal --}}
+                <div class="flex justify-between items-center">
+                    <div class="text-xs md:text-sm text-white/80">Pengeluaran Hari Ini</div>
+                    <div class="flex items-center text-xs md:text-sm text-white/70">
+                        <i class="fas fa-calendar-alt mr-1 text-white/70"></i>
+                        <span>{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</span>
+                    </div>
+                </div>
 
+                {{-- Total hari ini --}}
+                <div class="text-xl md:text-2xl font-bold text-white">Rp 245.000</div>
+
+                {{-- Perbandingan kemarin --}}
                 <div class="mt-1 md:mt-2 flex justify-between items-center">
                     <div>
                         <div class="text-xs text-white/70">Kemarin</div>
-                        <div class="text-xs md:text-sm font-medium">Rp 187.000</div>
+                        <div class="text-xs md:text-sm font-medium text-white">Rp 187.000</div>
                     </div>
 
                     <div class="bg-red-500/90 text-white text-xs px-2 md:px-3 py-1 rounded-full flex items-center">

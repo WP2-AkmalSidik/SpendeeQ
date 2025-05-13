@@ -11,13 +11,14 @@
 @section('content')
     <div class="page-content block" id="page-category">
         <!-- Header -->
-        <div class="navy-blue text-white p-6 rounded-b-3xl shadow-lg">
-            <div class="flex items-center space-x-4">
-                <a href="/" class="text-white">
+        <div class="bg-blue-900 text-white px-4 py-3 rounded-b-2xl shadow-md relative">
+            <div class="flex items-center justify-between">
+                <a href="/" class="text-white text-lg">
                     <i class="fas fa-arrow-left"></i>
                 </a>
-                <h1 class="text-xl font-bold text-center">Kategori</h1>
-                <button id="show-create-form" class="text-white">
+                <h1 class="text-base font-semibold text-center flex-grow">Kategori</h1>
+                <!-- Tombol plus dipindah ke pojok kanan atas -->
+                <button id="show-create-form" class="text-white text-lg absolute right-4 top-3">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>

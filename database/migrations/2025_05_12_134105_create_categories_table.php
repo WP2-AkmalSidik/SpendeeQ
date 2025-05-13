@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Nama kategori
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade'); // Relasi ke users, nullable untuk kategori global
+            $table->string('name'); // Nama kategori
+            $table->string('icon');
+            $table->string('color');
             $table->timestamps();
         });
     }

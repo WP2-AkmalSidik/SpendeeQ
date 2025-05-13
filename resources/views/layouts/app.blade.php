@@ -7,6 +7,7 @@
     @vite('resources/css/app.css')
     <script src="https://kit.fontawesome.com/af96158b7b.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>MoneyTracker</title>
     <style>
         body {
@@ -76,19 +77,19 @@
     <div class="bottom-nav">
         <a href="/" class="nav-item active">
             <i class="fas fa-home"></i>
-            <span>Home</span>
+            <span>Dashboard</span>
         </a>
-        <a href="/add" class="nav-item">
-            <i class="fas fa-plus-circle"></i>
-            <span>Add</span>
+        <a href="{{ route('expense.index') }}" class="nav-item">
+            <i class="fa-solid fa-rupiah-sign"></i>
+            <span>Pengeluaran</span>
         </a>
         <a href="/category" class="nav-item">
             <i class="fas fa-tags"></i>
-            <span>Category</span>
+            <span>Kategori</span>
         </a>
-        <a href="/profile" class="nav-item">
+        <a href="{{ route('profile.index') }}" class="nav-item">
             <i class="fas fa-user"></i>
-            <span>Profile</span>
+            <span>Profil</span>
         </a>
     </div>
 </body>
