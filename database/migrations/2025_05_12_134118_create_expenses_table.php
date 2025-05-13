@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relasi ke users
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Relasi ke categories
-            $table->date('date'); // Tanggal pengeluaran
+            $table->date('date'); // Tanggal pengeluaran (YYYY-MM-DD)
+            $table->time('time')->nullable(); // Waktu pengeluaran (HH:MM:SS)
             $table->decimal('amount', 12, 2); // Jumlah pengeluaran
-            $table->text('description')->nullable(); // Deskripsi pengeluaran
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
