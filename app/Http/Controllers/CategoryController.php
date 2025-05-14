@@ -17,36 +17,42 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // Get categories visible to the current user (global + user's own)
-        $categories = Category::forUser(Auth::id())
-            ->withCount('expenses')
-            ->with(['expenses' => function($query) {
-                $query->select('category_id', DB::raw('SUM(amount) as total_amount'))
-                    ->where('user_id', Auth::id())
-                    ->groupBy('category_id');
-            }])
+        $userId = Auth::id();
+        $categories = Category::forUser($userId)
+            ->withCount([
+                'expenses' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }
+            ])
+            ->with([
+                'expenses' => function ($query) use ($userId) {
+                    $query->select('category_id', DB::raw('SUM(amount) as total_amount'))
+                        ->where('user_id', $userId)
+                        ->groupBy('category_id');
+                }
+            ])
             ->orderBy('name')
             ->get();
-        
+
         // Find the category with most expenses for the current user
         $topCategory = null;
         $topCategoryPercentage = 0;
-        
+
         $totalExpensesCount = Expense::where('user_id', Auth::id())->count();
-        
+
         if ($totalExpensesCount > 0) {
             $categoryExpenseCounts = Expense::where('user_id', Auth::id())
                 ->select('category_id', DB::raw('count(*) as count'))
                 ->groupBy('category_id')
                 ->orderBy('count', 'desc')
                 ->first();
-                
+
             if ($categoryExpenseCounts) {
                 $topCategory = Category::find($categoryExpenseCounts->category_id);
                 $topCategoryPercentage = round(($categoryExpenseCounts->count / $totalExpensesCount) * 100);
             }
         }
-        
+
         return view('category', [
             'categories' => $categories,
             'totalCategories' => $categories->count(),
@@ -91,9 +97,9 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::where(function($query) {
+        $category = Category::where(function ($query) {
             $query->whereNull('user_id') // Global categories can be viewed
-                  ->orWhere('user_id', Auth::id()); // Or user's own categories
+                ->orWhere('user_id', Auth::id()); // Or user's own categories
         })->findOrFail($id);
 
         return response()->json([
@@ -142,10 +148,10 @@ class CategoryController extends Controller
     {
         // Only allow deleting user's own categories, not global ones
         $category = Category::where('user_id', Auth::id())->findOrFail($id);
-        
+
         // If there are expenses linked to this category, you might want to handle them
         // For example, reassign them to a default category or delete them
-        
+
         $category->delete();
 
         return response()->json([

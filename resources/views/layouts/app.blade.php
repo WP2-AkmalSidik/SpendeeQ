@@ -8,7 +8,7 @@
     <script src="{{ config('services.fontawesome.kit_url') }}" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>MoneyTracker</title>
+    <title>@yield('title') - SpandeeQ</title>
     <style>
         body {
             font-family: var(--font-sans);
