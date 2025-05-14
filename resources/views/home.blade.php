@@ -34,36 +34,57 @@
                 </div>
 
                 {{-- Total hari ini --}}
-                <div class="text-xl md:text-2xl font-bold text-white">Rp 245.000</div>
+                <div class="text-xl md:text-2xl font-bold text-white">Rp {{ number_format($todayTotal, 0, ',', '.') }}</div>
 
                 {{-- Perbandingan kemarin --}}
                 <div class="mt-1 md:mt-2 flex justify-between items-center">
                     <div>
                         <div class="text-xs text-white/70">Kemarin</div>
-                        <div class="text-xs md:text-sm font-medium text-white">Rp 187.000</div>
+                        <div class="text-xs md:text-sm font-medium text-white">Rp {{ number_format($yesterdayTotal, 0, ',', '.') }}</div>
                     </div>
 
-                    <div class="bg-red-500/90 text-white text-xs px-2 md:px-3 py-1 rounded-full flex items-center">
-                        <i class="fas fa-arrow-up mr-1"></i>
-                        <span>+31%</span>
-                    </div>
+                    @if($percentageChange !== 0)
+                        <div class="{{ $percentageChange > 0 ? 'bg-red-500/90' : 'bg-green-500/90' }} text-white text-xs px-2 md:px-3 py-1 rounded-full flex items-center">
+                            <i class="fas fa-arrow-{{ $percentageChange > 0 ? 'up' : 'down' }} mr-1"></i>
+                            <span>{{ $percentageChange > 0 ? '+' : '' }}{{ $percentageChange }}%</span>
+                        </div>
+                    @else
+                        <div class="bg-gray-500/90 text-white text-xs px-2 md:px-3 py-1 rounded-full flex items-center">
+                            <span>0%</span>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
         <!-- Alert -->
-        <div class="mx-3 md:mx-4 mt-3 md:mt-4 bg-red-50 border-l-4 border-red-500 p-3 md:p-4 rounded shadow-sm">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-exclamation-circle text-red-500"></i>
-                </div>
-                <div class="ml-2 md:ml-3">
-                    <p class="text-xs md:text-sm text-red-700">
-                        Pengeluaran hari ini 31% lebih tinggi dari kemarin. Coba kurangi pengeluaran non-esensial.
-                    </p>
+        @if($percentageChange > 0)
+            <div class="mx-3 md:mx-4 mt-3 md:mt-4 bg-red-50 border-l-4 border-red-500 p-3 md:p-4 rounded shadow-sm">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-500"></i>
+                    </div>
+                    <div class="ml-2 md:ml-3">
+                        <p class="text-xs md:text-sm text-red-700">
+                            Pengeluaran hari ini {{ $percentageChange }}% lebih tinggi dari kemarin. Coba kurangi pengeluaran non-esensial.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
+        @elseif($percentageChange < 0)
+            <div class="mx-3 md:mx-4 mt-3 md:mt-4 bg-green-50 border-l-4 border-green-500 p-3 md:p-4 rounded shadow-sm">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                    </div>
+                    <div class="ml-2 md:ml-3">
+                        <p class="text-xs md:text-sm text-green-700">
+                            Bagus! Pengeluaran hari ini {{ abs($percentageChange) }}% lebih rendah dari kemarin.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <!-- Chart Section -->
         <div class="p-3 md:p-4">
@@ -91,59 +112,42 @@
             <h2 class="text-base md:text-lg font-semibold mb-2 md:mb-3 navy-text">Kategori Teratas</h2>
 
             <div class="space-y-2 md:space-y-3">
-                <!-- Category 1 -->
-                <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-blue-100 text-blue-500">
-                            <i class="fas fa-utensils text-sm md:text-base"></i>
+                @forelse($topCategories as $index => $category)
+                    @php
+                        // Define color classes for icons based on category color or use defaults
+                        $colorClasses = [
+                            'blue' => 'bg-blue-100 text-blue-500',
+                            'purple' => 'bg-purple-100 text-purple-500',
+                            'green' => 'bg-green-100 text-green-500',
+                            'red' => 'bg-red-100 text-red-500',
+                            'yellow' => 'bg-yellow-100 text-yellow-500',
+                            'indigo' => 'bg-indigo-100 text-indigo-500',
+                            'pink' => 'bg-pink-100 text-pink-500',
+                        ];
+                        $defaultColors = ['blue', 'purple', 'green', 'red', 'yellow'];
+                        $colorClass = $colorClasses[$category->color ?? $defaultColors[$index % count($defaultColors)]];
+                    @endphp
+                    
+                    <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center {{ $colorClass }}">
+                                <i class="fas fa-{{ $category->icon ?? 'tag' }} text-sm md:text-base"></i>
+                            </div>
+                            <div class="ml-2 md:ml-3">
+                                <div class="text-sm md:text-base font-medium">{{ $category->name }}</div>
+                                <div class="text-xs text-gray-500">{{ $category->transaction_count }} transaksi</div>
+                            </div>
                         </div>
-                        <div class="ml-2 md:ml-3">
-                            <div class="text-sm md:text-base font-medium">Makanan</div>
-                            <div class="text-xs text-gray-500">15 transaksi</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm md:text-base font-semibold">Rp 845.000</div>
-                        <div class="text-xs text-gray-500">35% dari total</div>
-                    </div>
-                </div>
-
-                <!-- Category 2 -->
-                <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-purple-100 text-purple-500">
-                            <i class="fas fa-shopping-bag text-sm md:text-base"></i>
-                        </div>
-                        <div class="ml-2 md:ml-3">
-                            <div class="text-sm md:text-base font-medium">Belanja</div>
-                            <div class="text-xs text-gray-500">8 transaksi</div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm md:text-base font-semibold">Rp 620.000</div>
-                        <div class="text-xs text-gray-500">25% dari total</div>
-                    </div>
-                </div>
-
-                <!-- Category 3 -->
-                <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-green-100 text-green-500">
-                            <i class="fas fa-bus text-sm md:text-base"></i>
-                        </div>
-                        <div class="ml-2 md:ml-3">
-                            <div class="text-sm md:text-base font-medium">Transportasi</div>
-                            <div class="text-xs text-gray-500">22 transaksi</div>
+                        <div class="text-right">
+                            <div class="text-sm md:text-base font-semibold">Rp {{ number_format($category->total_amount, 0, ',', '.') }}</div>
+                            <div class="text-xs text-gray-500">{{ $category->percentage }}% dari total</div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-sm md:text-base font-semibold">Rp 450.000</div>
-                        <div class="text-xs text-gray-500">18% dari total</div>
+                @empty
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center text-gray-500">
+                        Belum ada data kategori
                     </div>
-                </div>
+                @endforelse
             </div>
         </div>
 
@@ -155,52 +159,57 @@
             </div>
 
             <div class="space-y-2 md:space-y-3">
-                <!-- Transaction 1 -->
-                <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-blue-100 text-blue-500">
-                            <i class="fas fa-utensils text-sm md:text-base"></i>
+                @forelse($recentTransactions as $transaction)
+                    @php
+                        $colorClasses = [
+                            'blue' => 'bg-blue-100 text-blue-500',
+                            'purple' => 'bg-purple-100 text-purple-500',
+                            'green' => 'bg-green-100 text-green-500',
+                            'red' => 'bg-red-100 text-red-500',
+                            'yellow' => 'bg-yellow-100 text-yellow-500',
+                            'indigo' => 'bg-indigo-100 text-indigo-500',
+                            'pink' => 'bg-pink-100 text-pink-500',
+                        ];
+                        $defaultColor = 'blue';
+                        $categoryColor = $transaction->category->color ?? $defaultColor;
+                        $colorClass = $colorClasses[$categoryColor] ?? $colorClasses[$defaultColor];
+                        
+                        // Format date and time for display
+                        $transactionDate = \Carbon\Carbon::parse($transaction->date);
+                        $today = \Carbon\Carbon::today();
+                        $yesterday = \Carbon\Carbon::yesterday();
+                        
+                        if ($transactionDate->isSameDay($today)) {
+                            $dateDisplay = 'Hari ini';
+                        } elseif ($transactionDate->isSameDay($yesterday)) {
+                            $dateDisplay = 'Kemarin';
+                        } else {
+                            $dateDisplay = $transactionDate->translatedFormat('j M Y');
+                        }
+                        
+                        $timeDisplay = $transaction->time ? \Carbon\Carbon::parse($transaction->time)->format('H:i') : '';
+                    @endphp
+                    
+                    <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center {{ $colorClass }}">
+                                <i class="fas fa-{{ $transaction->category->icon ?? 'tag' }} text-sm md:text-base"></i>
+                            </div>
+                            <div class="ml-2 md:ml-3">
+                                <div class="text-sm md:text-base font-medium">{{ $transaction->description ?? $transaction->category->name }}</div>
+                                <div class="text-xs text-gray-500">{{ $dateDisplay }}{{ $timeDisplay ? ', '.$timeDisplay : '' }}</div>
+                            </div>
                         </div>
-                        <div class="ml-2 md:ml-3">
-                            <div class="text-sm md:text-base font-medium">Makan Siang</div>
-                            <div class="text-xs text-gray-500">Hari ini, 12:30</div>
-                        </div>
+                        <div class="text-sm md:text-base font-semibold text-red-500">-Rp {{ number_format($transaction->amount, 0, ',', '.') }}</div>
                     </div>
-                    <div class="text-sm md:text-base font-semibold text-red-500">-Rp 75.000</div>
-                </div>
-
-                <!-- Transaction 2 -->
-                <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-purple-100 text-purple-500">
-                            <i class="fas fa-tshirt text-sm md:text-base"></i>
-                        </div>
-                        <div class="ml-2 md:ml-3">
-                            <div class="text-sm md:text-base font-medium">Beli Baju</div>
-                            <div class="text-xs text-gray-500">Hari ini, 10:15</div>
-                        </div>
+                @empty
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center text-gray-500">
+                        Belum ada transaksi terbaru
                     </div>
-                    <div class="text-sm md:text-base font-semibold text-red-500">-Rp 150.000</div>
-                </div>
-
-                <!-- Transaction 3 -->
-                <div class="bg-white p-2 md:p-3 rounded-xl shadow-sm flex justify-between items-center">
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-green-100 text-green-500">
-                            <i class="fas fa-bus text-sm md:text-base"></i>
-                        </div>
-                        <div class="ml-2 md:ml-3">
-                            <div class="text-sm md:text-base font-medium">Transportasi</div>
-                            <div class="text-xs text-gray-500">Kemarin, 18:45</div>
-                        </div>
-                    </div>
-                    <div class="text-sm md:text-base font-semibold text-red-500">-Rp 20.000</div>
-                </div>
+                @endforelse
             </div>
         </div>
+        
         <!-- Comparison Section -->
         <div class="p-3 md:p-4">
             <h2 class="text-base md:text-lg font-semibold mb-2 md:mb-3 navy-text">Perbandingan Pengeluaran</h2>
@@ -211,21 +220,26 @@
                     <h3 class="font-medium text-sm md:text-base">Minggu Ini vs Minggu Lalu</h3>
                     <div class="flex items-center text-xs">
                         <span class="mr-1">Perubahan:</span>
-                        <span class="font-semibold text-red-500 flex items-center">
-                            <i class="fas fa-arrow-up mr-1"></i>12%
-                        </span>
+                        @if($weeklyComparison['percentage_change'] !== 0)
+                            <span class="font-semibold {{ $weeklyComparison['percentage_change'] > 0 ? 'text-red-500' : 'text-green-500' }} flex items-center">
+                                <i class="fas fa-arrow-{{ $weeklyComparison['percentage_change'] > 0 ? 'up' : 'down' }} mr-1"></i>
+                                {{ $weeklyComparison['percentage_change'] }}%
+                            </span>
+                        @else
+                            <span class="font-semibold text-gray-500">0%</span>
+                        @endif
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-blue-50 p-2 rounded-lg">
                         <div class="text-xs text-gray-500">Minggu Ini</div>
-                        <div class="font-bold">Rp 1.450.000</div>
-                        <div class="text-xs text-gray-500">7 hari terakhir</div>
+                        <div class="font-bold">Rp {{ number_format($weeklyComparison['current']['total'], 0, ',', '.') }}</div>
+                        <div class="text-xs text-gray-500">{{ $weeklyComparison['current']['label'] }}</div>
                     </div>
                     <div class="bg-gray-50 p-2 rounded-lg">
                         <div class="text-xs text-gray-500">Minggu Lalu</div>
-                        <div class="font-bold">Rp 1.295.000</div>
-                        <div class="text-xs text-gray-500">8-14 hari lalu</div>
+                        <div class="font-bold">Rp {{ number_format($weeklyComparison['previous']['total'], 0, ',', '.') }}</div>
+                        <div class="text-xs text-gray-500">{{ $weeklyComparison['previous']['label'] }}</div>
                     </div>
                 </div>
             </div>
@@ -236,21 +250,26 @@
                     <h3 class="font-medium text-sm md:text-base">Bulan Ini vs Bulan Lalu</h3>
                     <div class="flex items-center text-xs">
                         <span class="mr-1">Perubahan:</span>
-                        <span class="font-semibold text-green-500 flex items-center">
-                            <i class="fas fa-arrow-down mr-1"></i>5%
-                        </span>
+                        @if($monthlyComparison['percentage_change'] !== 0)
+                            <span class="font-semibold {{ $monthlyComparison['percentage_change'] > 0 ? 'text-red-500' : 'text-green-500' }} flex items-center">
+                                <i class="fas fa-arrow-{{ $monthlyComparison['percentage_change'] > 0 ? 'up' : 'down' }} mr-1"></i>
+                                {{ $monthlyComparison['percentage_change'] }}%
+                            </span>
+                        @else
+                            <span class="font-semibold text-gray-500">0%</span>
+                        @endif
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-blue-50 p-2 rounded-lg">
                         <div class="text-xs text-gray-500">Bulan Ini</div>
-                        <div class="font-bold">Rp 5.820.000</div>
-                        <div class="text-xs text-gray-500">1-13 Mei 2025</div>
+                        <div class="font-bold">Rp {{ number_format($monthlyComparison['current']['total'], 0, ',', '.') }}</div>
+                        <div class="text-xs text-gray-500">{{ $monthlyComparison['current']['label'] }}</div>
                     </div>
                     <div class="bg-gray-50 p-2 rounded-lg">
                         <div class="text-xs text-gray-500">Bulan Lalu</div>
-                        <div class="font-bold">Rp 6.125.000</div>
-                        <div class="text-xs text-gray-500">1-30 Apr 2025</div>
+                        <div class="font-bold">Rp {{ number_format($monthlyComparison['previous']['total'], 0, ',', '.') }}</div>
+                        <div class="text-xs text-gray-500">{{ $monthlyComparison['previous']['label'] }}</div>
                     </div>
                 </div>
             </div>
@@ -261,21 +280,26 @@
                     <h3 class="font-medium text-sm md:text-base">Tahun Ini vs Tahun Lalu</h3>
                     <div class="flex items-center text-xs">
                         <span class="mr-1">Perubahan:</span>
-                        <span class="font-semibold text-red-500 flex items-center">
-                            <i class="fas fa-arrow-up mr-1"></i>18%
-                        </span>
+                        @if($yearlyComparison['percentage_change'] !== 0)
+                            <span class="font-semibold {{ $yearlyComparison['percentage_change'] > 0 ? 'text-red-500' : 'text-green-500' }} flex items-center">
+                                <i class="fas fa-arrow-{{ $yearlyComparison['percentage_change'] > 0 ? 'up' : 'down' }} mr-1"></i>
+                                {{ $yearlyComparison['percentage_change'] }}%
+                            </span>
+                        @else
+                            <span class="font-semibold text-gray-500">0%</span>
+                        @endif
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-blue-50 p-2 rounded-lg">
                         <div class="text-xs text-gray-500">Tahun Ini</div>
-                        <div class="font-bold">Rp 28.450.000</div>
-                        <div class="text-xs text-gray-500">Jan-Mei 2025</div>
+                        <div class="font-bold">Rp {{ number_format($yearlyComparison['current']['total'], 0, ',', '.') }}</div>
+                        <div class="text-xs text-gray-500">{{ $yearlyComparison['current']['label'] }}</div>
                     </div>
                     <div class="bg-gray-50 p-2 rounded-lg">
                         <div class="text-xs text-gray-500">Tahun Lalu</div>
-                        <div class="font-bold">Rp 24.110.000</div>
-                        <div class="text-xs text-gray-500">Jan-Mei 2024</div>
+                        <div class="font-bold">Rp {{ number_format($yearlyComparison['previous']['total'], 0, ',', '.') }}</div>
+                        <div class="text-xs text-gray-500">{{ $yearlyComparison['previous']['label'] }}</div>
                     </div>
                 </div>
             </div>
@@ -285,19 +309,19 @@
     <!-- Initialize Chart -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Chart data
+            // Chart data from controller
             const chartData = {
                 week: {
-                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
-                    data: [150000, 125000, 187000, 98000, 245000, 180000, 120000]
+                    labels: {!! json_encode($chartData['week']['labels']) !!},
+                    data: {!! json_encode($chartData['week']['data']) !!}
                 },
                 month: {
-                    labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
-                    data: [650000, 720000, 580000, 890000]
+                    labels: {!! json_encode($chartData['month']['labels']) !!},
+                    data: {!! json_encode($chartData['month']['data']) !!}
                 },
                 year: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'],
-                    data: [2500000, 2200000, 2800000, 2400000, 2100000, 2600000, 2900000, 3100000, 2700000, 2400000, 2300000, 3000000]
+                    labels: {!! json_encode($chartData['year']['labels']) !!},
+                    data: {!! json_encode($chartData['year']['data']) !!}
                 }
             };
 

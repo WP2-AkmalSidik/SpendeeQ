@@ -68,29 +68,44 @@
 
 <body>
     <div class="main-content pb-20">
+        <div id="loader" class="absolute inset-0 bg-white bg-opacity-70 z-50 hidden flex items-center justify-center">
+            <div class="flex flex-col items-center">
+                <svg class="animate-spin h-10 w-10 text-[#000080]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                        stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+                <p class="mt-3 text-[#000080] font-semibold animate-pulse">Memuat konten...</p>
+            </div>
+        </div>
+
         <!-- Page content will go here -->
         @yield('content')
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="{{ route('dashboard.index') }}" class="nav-item active">
+        <a href="{{ route('dashboard.index') }}"
+            class="nav-item {{ request()->routeIs('dashboard.*') ? 'active' : '' }}">
             <i class="fas fa-home"></i>
-            <span>Dashboard</span>
+            <span>Beranda</span>
         </a>
-        <a href="{{ route('expense.index') }}" class="nav-item">
+        <a href="{{ route('expenses.index') }}" class="nav-item {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
             <i class="fa-solid fa-rupiah-sign"></i>
             <span>Pengeluaran</span>
         </a>
-        <a href="/category" class="nav-item">
+        <a href="{{ route('categories.index') }}"
+            class="nav-item {{ request()->routeIs('categories.*') ? 'active' : '' }}">
             <i class="fas fa-tags"></i>
             <span>Kategori</span>
         </a>
-        <a href="{{ route('profile.index') }}" class="nav-item">
+        <a href="{{ route('profile.index') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
             <i class="fas fa-user"></i>
             <span>Profil</span>
         </a>
     </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             @if (session('success'))
@@ -114,6 +129,23 @@
             @endif
         });
     </script>
+    <script>
+        document.querySelectorAll('.bottom-nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const currentUrl = window.location.href;
+                const targetUrl = this.href;
+
+                if (targetUrl !== currentUrl) {
+                    document.getElementById('loader').classList.remove('hidden');
+                }
+            });
+        });
+
+        window.addEventListener('pageshow', function() {
+            document.getElementById('loader').classList.add('hidden');
+        });
+    </script>
+
 </body>
 
 </html>
