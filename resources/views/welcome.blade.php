@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SpandeeQ - Asisten Keuangan Pribadi</title>
     @vite('resources/css/app.css')
-    <script src="https://kit.fontawesome.com/af96158b7b.js" crossorigin="anonymous"></script>
+    <script src="{{ config('services.fontawesome.kit_url') }}" crossorigin="anonymous"></script>
     <style>
         .bg-navy {
             background-color: #000080;

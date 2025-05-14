@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpendeeQ - Aplikasi Pengelola Keuangan</title>
     @vite('resources/css/app.css')
-    <script src="https://kit.fontawesome.com/af96158b7b.js" crossorigin="anonymous"></script>
+    <script src="{{ config('services.fontawesome.kit_url') }}" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 

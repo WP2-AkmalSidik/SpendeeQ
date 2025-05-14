@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'fontawesome' => [
+        'kit_url' => env('FONTAWESOME_KIT_URL'),
+    ],
+
 ];
