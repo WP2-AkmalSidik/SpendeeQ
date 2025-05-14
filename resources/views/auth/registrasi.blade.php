@@ -6,7 +6,6 @@
         <!-- Header -->
         <div class="navy-blue text-white p-4 md:p-6 rounded-b-3xl shadow-lg">
             <div class="flex justify-center items-center mb-3 md:mb-4">
-                <!-- Logo Judul -->
                 <div class="flex items-center space-x-1">
                     <div class="relative inline-block">
                         <h1 class="text-2xl md:text-3xl font-bold relative z-10">Spendee</h1>
@@ -118,7 +117,8 @@
                                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required>
                             </div>
                             <label for="terms" class="ml-2 text-xs text-gray-600">
-                                Saya menyetujui <a href="#" class="text-blue-500 hover:underline">Syarat & Ketentuan</a> dan
+                                Saya menyetujui <a href="#" class="text-blue-500 hover:underline">Syarat &
+                                    Ketentuan</a> dan
                                 <a href="#" class="text-blue-500 hover:underline">Kebijakan Privasi</a>
                             </label>
                         </div>
@@ -169,11 +169,10 @@
     </div>
 
     <script>
-        // Toggle password visibility
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const toggleButtons = document.querySelectorAll('.toggle-password');
             toggleButtons.forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     const input = this.closest('div').querySelector('input');
                     const icon = this.querySelector('i');
 
@@ -200,4 +199,43 @@
             color: #000080;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Sedang memproses...',
+                    html: 'Mohon tunggu sebentar. Kami sedang mendaftarkan akun Anda.',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+
+                this.submit();
+            });
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#000080'
+                });
+            @endif
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#000080'
+                });
+            @endif
+        });
+    </script>
 @endsection

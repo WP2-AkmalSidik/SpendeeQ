@@ -74,7 +74,7 @@
                 </div>
             </div>
             <div class="md:w-1/2 flex justify-center">
-                <img src="/api/placeholder/540/420" alt="SpandeeQ Dashboard"
+                <img src="{{ asset('img/image.png') }}" alt="SpandeeQ Dashboard"
                     class="rounded-lg shadow-xl max-w-full h-auto" />
             </div>
         </div>
@@ -210,7 +210,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm">
                     <div class="flex items-center mb-4">
-                        <img src="/api/placeholder/64/64" alt="User" class="w-12 h-12 rounded-full" />
+                        <img src="https://avatar.iran.liara.run/public/boy" alt="User" class="w-12 h-12 rounded-full" />
                         <div class="ml-4">
                             <h4 class="font-bold">Andi Pratama</h4>
                             <div class="flex text-yellow-300">
@@ -227,7 +227,7 @@
                 </div>
                 <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm">
                     <div class="flex items-center mb-4">
-                        <img src="/api/placeholder/64/64" alt="User" class="w-12 h-12 rounded-full" />
+                        <img src="https://avatar.iran.liara.run/public/girl" alt="User" class="w-12 h-12 rounded-full" />
                         <div class="ml-4">
                             <h4 class="font-bold">Dina Wijaya</h4>
                             <div class="flex text-yellow-300">
@@ -244,7 +244,7 @@
                 </div>
                 <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm">
                     <div class="flex items-center mb-4">
-                        <img src="/api/placeholder/64/64" alt="User" class="w-12 h-12 rounded-full" />
+                        <img src="https://avatar.iran.liara.run/public/boy" alt="User" class="w-12 h-12 rounded-full" />
                         <div class="ml-4">
                             <h4 class="font-bold">Budi Santoso</h4>
                             <div class="flex text-yellow-300">

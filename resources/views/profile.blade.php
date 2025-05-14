@@ -31,7 +31,7 @@
                 </button>
             </div>
             <h1 class="text-xl font-bold" id="profile-name">Budi Santoso</h1>
-            <p class="text-gray-600" id="profile-username">@budisantoso</p>
+            <p class="text-gray-600" id="profile-email">budi@spendeeq.com</</p>
         </div>
 
         <!-- Stats Cards -->
@@ -400,7 +400,7 @@
                             confirmButtonColor: '#000080'
                         }).then(() => {
                             // Then redirect to login page
-                            window.location.href = '/login';
+                            window.location.href = '/';
                         });
                     }
                 });

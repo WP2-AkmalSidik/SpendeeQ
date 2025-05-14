@@ -20,7 +20,7 @@ Route::middleware('guest')->group(function () {
 
 // Protected routes
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/pengeluaran', [ExpenseController::class, 'index'])->name('expense.index');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

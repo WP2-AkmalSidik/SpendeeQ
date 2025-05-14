@@ -5,7 +5,6 @@
         <!-- Header -->
         <div class="navy-blue text-white p-4 md:p-6 rounded-b-3xl shadow-lg">
             <div class="flex justify-center items-center mb-3 md:mb-4">
-                <!-- Logo Judul -->
                 <div class="flex items-center space-x-1">
                     <div class="relative inline-block">
                         <h1 class="text-2xl md:text-3xl font-bold relative z-10">Spendee</h1>
@@ -80,7 +79,8 @@
                         <!-- Remember Me -->
                         <div class="flex items-center mb-6">
                             <input id="remember" type="checkbox"
-                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" name="remember"
+                                {{ old('remember') ? 'checked' : '' }}>
                             <label for="remember" class="ml-2 text-sm text-gray-600">Ingat saya</label>
                         </div>
 
@@ -130,11 +130,10 @@
     </div>
 
     <script>
-        // Toggle password visibility
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const toggleButtons = document.querySelectorAll('.toggle-password');
             toggleButtons.forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     const input = this.closest('div').querySelector('input');
                     const icon = this.querySelector('i');
 
@@ -161,4 +160,44 @@
             color: #000080;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Sedang memproses...',
+                    html: 'Mohon tunggu sebentar.',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+
+                this.submit();
+            });
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#000080'
+                });
+            @endif
+
+            // Menampilkan SweetAlert untuk pesan sukses jika ada
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#000080'
+                });
+            @endif
+        });
+    </script>
 @endsection

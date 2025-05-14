@@ -10,17 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    /**
-     * Menampilkan halaman register
-     */
     public function showRegisterForm()
     {
         return view('auth.registrasi');
     }
 
-    /**
-     * Memproses registrasi user
-     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -32,7 +26,8 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('error', 'Registrasi gagal! Periksa data yang Anda masukkan.');
         }
 
         $user = User::create([
@@ -41,22 +36,15 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($user);
-
-        return redirect()->route('dashboard');
+        return redirect()->route('login')
+            ->with('success', 'Registrasi berhasil! Silakan login untuk melanjutkan.');
     }
 
-    /**
-     * Menampilkan halaman login
-     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    /**
-     * Memproses login user
-     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -67,7 +55,8 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('error', 'Login gagal! Periksa data yang Anda masukkan.');
         }
 
         $credentials = $request->only('email', 'password');
@@ -75,17 +64,18 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+
+            session()->flash('success', 'Login berhasil! Selamat datang, ' . Auth::user()->name);
+
+            return redirect()->route('dashboard.index');
         }
 
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
-        ])->withInput($request->except('password'));
+        ])->withInput($request->except('password'))
+            ->with('error', 'Login gagal! Email atau password yang Anda masukkan salah.');
     }
 
-    /**
-     * Logout user
-     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -93,6 +83,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Logout berhasil!');
     }
 }

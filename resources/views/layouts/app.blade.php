@@ -30,7 +30,6 @@
         .main-content {
             flex: 1;
             padding-bottom: 72px;
-            /* Space for bottom nav */
         }
 
         .bottom-nav {
@@ -75,7 +74,7 @@
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="/" class="nav-item active">
+        <a href="{{ route('dashboard.index') }}" class="nav-item active">
             <i class="fas fa-home"></i>
             <span>Dashboard</span>
         </a>
@@ -92,6 +91,29 @@
             <span>Profil</span>
         </a>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: "{{ session('success') }}",
+                    confirmButtonColor: '#000080',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#000080'
+                });
+            @endif
+        });
+    </script>
 </body>
 
 </html>
